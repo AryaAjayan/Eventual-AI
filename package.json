@@ -1,0 +1,19 @@
+{
+  "name": "eventual-ai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npx ts-node --transpile-only src/server.ts",
+    "start:frontend": "cd frontend && npm run dev",
+    "test": "cd backend && npx jest src/tests/core.test.ts",
+    "replay": "cd backend && npx ts-node --transpile-only src/harness/replay.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
