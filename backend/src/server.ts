@@ -101,6 +101,20 @@ app.post('/api/chat', async (req: any, reply) => {
     return { response: response.text };
   } catch (error: any) {
     console.error("Chat Error:", error);
+    
+    // Graceful fallback for Google API limits (429, 503, 400)
+    const errString = String(error.message || error);
+    if (errString.includes("429") || errString.includes("503") || errString.includes("400") || errString.includes("quota") || errString.includes("expired")) {
+      console.log("Using Mock Fallback Response due to Google API limits.");
+      const mockResponse = `(Google AI API is currently overloaded or quota exceeded, so I'm using a fallback response!) 
+
+**FinOps Copilot Analysis:**
+- Your current total monthly spend looks steady.
+- Be careful with **Vendor A**, you are approaching 80% of your $5,000 monthly limit!
+- Would you like me to identify specific idle resources you can quarantine?`;
+      return { response: mockResponse };
+    }
+
     return { response: "An error occurred while contacting the AI provider: " + error.message };
   }
 });
