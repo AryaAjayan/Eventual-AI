@@ -13,6 +13,27 @@ This engine solves that by ingesting raw usage and cost data from various AI ven
 - **Backend**: Node.js, Fastify, TypeScript
 - **Database**: SQLite (using `better-sqlite3` for fast, synchronous append-only logs)
 - **Validation**: Zod (for strict schema validation and drift detection)
+- **AI Integration**: Google GenAI SDK (Gemini 2.5 Flash) for the conversational Copilot
+- **Assets**: `rembg` (Python) for AI-driven background removal of 3D avatars
+
+---
+
+## Key Features
+
+1. **AI-Powered FinOps Copilot**
+   A chat interface embedded directly into the dashboard. Powered by Google Gemini, the assistant has real-time, zero-latency access to your live database metrics (total spend, unresolved spend, monthly trends, and app budgets) and can intelligently answer natural language questions about your burn rate.
+
+2. **Real-Time Analytics Dashboard**
+   Live charts built with Recharts automatically update as server-sent events (SSE) push new data.
+   - **Monthly Spend Summary**: A trend line visualizing costs over time.
+   - **Spend Separated by App**: A bar chart dynamically categorizing costs by vendor.
+   - **App Usage Breakdown**: A detailed data table.
+
+3. **Production-Ready Webhooks**
+   The `/api/webhooks/ingest/:vendor` endpoint safely accepts payloads from various tools. It validates the schema using Zod, drops it into a canonical append-only event log, and materializes the state for querying.
+
+4. **Transparent 3D Avatar**
+   The UI utilizes an independent, fully transparent robotic avatar processed via AI background-removal, eliminating messy CSS blends for a flawless, professional look.
 
 ---
 
@@ -36,11 +57,14 @@ flowchart TD
         
         G[(Canonical Event Log\nAppend-Only)]
         H[(Materialized Views\nReal-time Metrics)]
+        
+        K[Gemini AI Copilot\nReads DB Context]
     end
 
     subgraph Frontend Dashboard
         I[React UI\nLive SSE Stream]
         J[Recharts Analytics]
+        L[Copilot Chat Interface]
     end
 
     A --> D
@@ -54,6 +78,9 @@ flowchart TD
     G -- Database Triggers --> H
     H -- Server-Sent Events --> I
     H -- Server-Sent Events --> J
+    
+    H -.-> K
+    L <--> K
 ```
 
 ---
@@ -73,13 +100,16 @@ In the future, adding support for apps like **Claude (Anthropic), Canva, Adobe, 
 Everything runs locally with a single command (using SQLite for local testability without Docker dependencies).
 
 ```bash
-# 1. Install dependencies at the root
+# 1. Provide your Gemini API Key in backend/.env
+# GEMINI_API_KEY="your_api_key_here"
+
+# 2. Install dependencies at the root
 npm install
 
-# 2. Run the tests (verifies core requirements)
+# 3. Run the tests (verifies core requirements)
 npm run test
 
-# 3. Start the Backend Server and UI Console concurrently
+# 4. Start the Backend Server and UI Console concurrently
 npm start
 ```
-The UI will open at `http://localhost:5173`. You can interact with the system via the Control Panel to inject events, drift, and redeliveries, and watch the system resolve them live over SSE.
+The UI will open at `http://localhost:5173`. You can chat with the AI Copilot and watch live metrics update as webhooks hit the backend!
