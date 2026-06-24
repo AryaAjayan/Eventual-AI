@@ -91,7 +91,7 @@ app.post('/api/chat', async (req: any, reply) => {
     Be concise, helpful, and reference their exact numbers, budgets, and what's remaining. If a budget is exceeded, warn them.`;
 
     const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash-lite',
         contents: [
             { role: 'user', parts: [{ text: systemPrompt }] },
             { role: 'user', parts: [{ text: message }] }
