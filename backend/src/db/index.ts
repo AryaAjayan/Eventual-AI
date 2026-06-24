@@ -1,11 +1,11 @@
-import Database from 'better-sqlite3';
+import Database, { Database as BetterSqlite3Database } from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 
 const dbPath = path.join(__dirname, '../../data.db');
 const schemaPath = path.join(__dirname, 'schema.sql');
 
-export const db = new Database(dbPath, { verbose: console.log });
+export const db: BetterSqlite3Database = new Database(dbPath, { verbose: console.log });
 
 // Enable WAL mode for better concurrency
 db.pragma('journal_mode = WAL');

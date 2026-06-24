@@ -18,7 +18,7 @@ export const CanonicalEventSchema = z.object({
   source_email: z.string().email().nullable().default(null),
   source_device_id: z.string().nullable().default(null),
   canonical_user_id: z.string().nullable().default(null),
-  raw_extra: z.record(z.any()).default({}),
+  raw_extra: z.record(z.string(), z.any()).default({}),
 });
 
 export type CanonicalEvent = z.infer<typeof CanonicalEventSchema>;
