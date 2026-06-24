@@ -32,7 +32,7 @@ export class IngestionPipeline {
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         // Drift detected!
-        const reason = `Schema Drift Detected: ${err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
+        const reason = `Schema Drift Detected: ${(err as any).errors.map((e: any) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
         console.error(`[ALERT] ${reason}`);
         this.quarantine(vendor, rawPayload, reason);
         return null;

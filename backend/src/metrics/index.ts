@@ -51,6 +51,20 @@ export class MetricsService {
     `;
     return db.prepare(query).get();
   }
+
+  getMonthlyTrends() {
+    const query = `
+      SELECT 
+        strftime('%Y-%m', event_timestamp) as month,
+        vendor,
+        SUM(cost_amount) as total_cost,
+        SUM(total_tokens) as total_tokens
+      FROM canonical_events_current
+      GROUP BY month, vendor
+      ORDER BY month ASC
+    `;
+    return db.prepare(query).all();
+  }
 }
 
 export const metricsService = new MetricsService();

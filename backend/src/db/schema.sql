@@ -110,3 +110,10 @@ BEGIN
   SET canonical_user_id = json_extract(NEW.delta, '$.canonical_user_id')
   WHERE dedup_key = NEW.dedup_key;
 END;
+
+-- Budgets for vendors
+CREATE TABLE IF NOT EXISTS vendor_budgets (
+  vendor TEXT PRIMARY KEY,
+  monthly_limit REAL NOT NULL,
+  billing_day INTEGER DEFAULT 1
+);

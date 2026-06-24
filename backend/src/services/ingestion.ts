@@ -20,7 +20,7 @@ export class IngestionService {
 
     // Identify if there's a unique ID provided by the vendor
     // We embedded it in raw_extra for ChatGPT, or we can just pass null
-    const vendorEventId = canonicalPayload.raw_extra?.source_event_id || null;
+    const vendorEventId = (canonicalPayload.raw_extra as any)?.source_event_id as string | null;
 
     // We do this in a single synchronous transaction (if using pg it would be async, but better-sqlite3 is sync)
     // Actually, better to just let them be separate log entries.
